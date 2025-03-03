@@ -1,12 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..core.llm_manager import LLMManager
 from ..models.schemas import ChatRequest
+from ..config.settings import Settings
 
 router = APIRouter()
-llm_manager = LLMManager()
+
+def get_llm_manager(settings: Settings):
+    return LLMManager(settings.dict())  # Settings passed to LLMManager
 
 @router.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(request: ChatRequest, llm_manager = Depends(get_llm_manager)):
     try:
         response = await llm_manager.process_user_query(request.query)
         return {"response": response}

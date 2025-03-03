@@ -1,7 +1,7 @@
 from .db_manager import DatabaseManager
 from .web_search import WebSearchLLM
 from .llms.chat_llm import ChatLLM
-from .llms.recipe_llm import RecipeLLM
+from .llms.web_llm import WebLLM
 from typing import Dict, Any
 
 class LLMManager:
@@ -9,12 +9,12 @@ class LLMManager:
         self.db_manager = DatabaseManager()
         self.web_search_llm = WebSearchLLM()
         self.chat_llm = ChatLLM()
-        self.recipe_llm = RecipeLLM()
+        self.web_llm = WebLLM()
         self.initialize_llms(config)
     
     async def initialize_llms(self, config: Dict[str, Any]):
-        await self.chat_llm.initialize(config.get("chat_config", {}))
-        await self.recipe_llm.initialize(config.get("recipe_config", {}))
+        await self.chat_llm.initialize(config.get("chat_llm", {}))
+        await self.web_llm.initialize(config.get("web_llm", {}))
     
     async def process_user_query(self, query: str) -> str:
         if self._is_recipe_query(query):
